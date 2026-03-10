@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% from "components/search_form.html" import render_search %}
+{% from "components/timeline.html" import render_timeline %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <h1 class="text-2xl font-extrabold mb-2 gradient-text">Multi-Tracking</h1>
+    <p class="text-gray-500 dark:text-gray-400 mb-6">Consulta varios envios al mismo tiempo</p>
+
+    <!-- Multi-search form -->
+    <form action="/multi" method="get" class="mb-8">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-5 shadow-sm">
+            <label class="block text-sm font-semibold mb-2">Ingresa los IDs OSE separados por coma</label>
+            <div class="flex gap-2">
+                <input type="text" name="ids" value="{{ ids_str }}"
+                       placeholder="12345, 67890, 11111"
+                       class="flex-1 py-3 px-4 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:border-primary-600 dark:focus:border-accent-500 focus:ring-2 focus:ring-primary-600/10 outline-none transition-all">
+                <button type="submit" class="px-6 py-3 bg-primary-600 hover:bg-primary-700 dark:bg-accent-500 dark:hover:bg-accent-600 text-white font-bold rounded-xl transition-all duration-200 btn-hover shadow-sm">
+                    Buscar
+                </button>
+            </div>
+            <p class="text-xs text-gray-400 mt-2">Maximo 10 envios a la vez</p>
+        </div>
+    </form>
+
+    {% if trackings %}
+    <div class="mb-6 flex items-center justify-between">
+        <h2 class="font-bold flex items-center gap-2">
+            <span class="bg-primary-600/10 dark:bg-accent-500/10 text-primary-600 dark:text-accent-400 w-7 h-7 rounded-lg flex items-center justify-center text-sm font-bold">{{ trackings|length }}</span>
+            envio{{ 's' if trackings|length > 1 else '' }}
+        </h2>
+        <button onclick="navigator.clipboard.writeText(window.location.href); window.dispatchEvent(new CustomEvent('show-toast', {detail: {message: 'Link copiado!'}}))"
+                class="text-xs bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 px-3 py-1.5 rounded-lg transition-colors border border-gray-200 dark:border-gray-700 font-medium">
+            Copiar link dashboard
+        </button>
+    </div>
+
+    <div class="space-y-4">
+        {% for t in trackings %}
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden card-hover">
+            <div class="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 dark:from-primary-700 dark:via-primary-800 dark:to-primary-900 px-5 py-3.5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <h3 class="text-white font-bold tracking-wide">OSE {{ t.ose_id }}</h3>
+                    <span class="text-white/80 text-xs bg-white/15 px-2.5 py-1 rounded-lg font-medium backdrop-blur-sm border border-white/10">
+                        {{ t.status }}
+                    </span>
+                </div>
+                <a href="/tracking/{{ t.ose_id }}" class="bg-white/15 hover:bg-white/25 text-white text-xs px-3.5 py-1.5 rounded-lg transition-all duration-200 font-semibold backdrop-blur-sm border border-white/10">
+                    Detalle
+                </a>
+            </div>
+            <div class="p-5">
+                <div class="grid grid-cols-2 gap-3 text-sm mb-4">
+                    <div class="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-3">
+                        <span class="text-gray-400 dark:text-gray-500 text-xs font-medium">Remitente</span>
+                        <p class="font-semibold text-sm">{{ t.sender_name }}</p>
+                    </div>
+                    <div class="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-3">
+                        <span class="text-gray-400 dark:text-gray-500 text-xs font-medium">Destinatario</span>
+                        <p class="font-semibold text-sm">{{ t.receiver_name }}</p>
+                    </div>
+                </div>
+                {% if t.estimated_delivery %}
+                <p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Entrega estimada: <strong class="text-gray-700 dark:text-gray-200">{{ t.estimated_delivery }}</strong></p>
+                {% endif %}
+                {{ render_timeline(t.timeline, animate=false) }}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% elif ids_str %}
+    <div class="text-center py-16 text-gray-500 dark:text-gray-400 animate-fade-in">
+        <div class="w-16 h-16 mx-auto mb-4 bg-gray-100 dark:bg-gray-800 rounded-2xl flex items-center justify-center">
+            <svg class="w-8 h-8 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+        <p class="font-medium">No se encontraron resultados para los IDs proporcionados.</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

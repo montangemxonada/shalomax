@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% from "components/search_form.html" import render_search %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-extrabold mb-8 gradient-text">Acerca de Shalomax</h1>
+
+    <!-- What is it -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-6 card-hover shadow-sm">
+        <div class="flex items-start gap-4">
+            <div class="w-10 h-10 bg-primary-600/10 dark:bg-accent-500/10 rounded-xl flex items-center justify-center flex-shrink-0">
+                <svg class="w-5 h-5 text-primary-600 dark:text-accent-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            </div>
+            <div>
+                <h2 class="text-xl font-bold mb-2">Que es Shalomax?</h2>
+                <p class="text-gray-600 dark:text-gray-300 leading-relaxed">
+                    Shalomax es una herramienta web gratuita para rastrear tus envios de Shalom de forma rapida y sencilla.
+                    Puedes consultar el estado de tu paquete usando tu numero de orden + codigo o el ID OSE, y compartir
+                    el link de seguimiento con quien quieras. Tambien puedes escanear el codigo QR de tu recibo fisico.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ -->
+    <div class="bg-white dark:bg-gray-800 rounded-2xl border border-gray-200 dark:border-gray-700 p-6 mb-6 shadow-sm">
+        <h2 class="text-xl font-bold mb-5 flex items-center gap-2">
+            <svg class="w-5 h-5 text-accent-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Preguntas frecuentes
+        </h2>
+
+        <div x-data="{ open: null }" class="space-y-2">
+            {% set faqs = [
+                ("Como busco mi envio?", "Usa las pestanas del buscador: 'Orden + Codigo' para buscar con el numero y codigo de tu orden de servicio, o 'OSE ID' para buscar por el identificador OSE. Tambien puedes escanear el QR del recibo fisico."),
+                ("Como escaneo el QR de mi recibo?", "En el buscador principal, selecciona la pestana 'Escanear QR'. Se activara tu camara y al apuntar al codigo QR del recibo se buscara automaticamente tu envio."),
+                ("Como comparto el estado de mi envio?", "En la pagina de seguimiento encontraras botones para compartir por WhatsApp, Telegram, email, o copiar el link. Tambien puedes descargar un codigo QR."),
+                ("Que significan los estados?", "Registrado: ingresado al sistema. En origen: en oficina de origen. En transito: viajando a destino. En destino: llego a la ciudad destino. En reparto: un repartidor lo esta llevando. Entregado: ya fue entregado."),
+                ("Puedo rastrear varios envios a la vez?", "Si! Usa Multi-tracking. Ingresa los IDs OSE separados por coma y podras ver todos en un solo dashboard."),
+                ("Puedo instalar Shalomax en mi celular?", "Si! Shalomax es una PWA. En tu navegador movil, busca 'Agregar a pantalla de inicio' o 'Instalar app'."),
+                ("Como descargo mi recibo?", "En la pagina de seguimiento, haz click en el boton naranja 'Descargar Recibo PDF' para obtener el comprobante oficial.")
+            ] %}
+
+            {% for question, answer in faqs %}
+            <div class="border border-gray-100 dark:border-gray-700 rounded-xl overflow-hidden">
+                <button @click="open = open === {{ loop.index0 }} ? null : {{ loop.index0 }}"
+                        class="w-full text-left px-4 py-3.5 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                    <span class="font-semibold text-sm">{{ question }}</span>
+                    <svg class="w-5 h-5 text-gray-400 transition-transform duration-200 flex-shrink-0 ml-2" :class="{ 'rotate-180': open === {{ loop.index0 }} }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                </button>
+                <div x-show="open === {{ loop.index0 }}" x-transition x-cloak class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-300 leading-relaxed">
+                    {{ answer }}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Search -->
+    <div class="text-center py-8">
+        <p class="text-gray-500 dark:text-gray-400 mb-4 font-medium">Listo para buscar tu envio?</p>
+        {{ render_search(size="small") }}
+    </div>
+</div>
+{% endblock %}

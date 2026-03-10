@@ -1,0 +1,106 @@
+{% macro render_search(query="", size="large", show_tabs=true) %}
+<div x-data="searchTabs()" class="w-full {% if size == 'large' %}max-w-2xl{% else %}max-w-lg{% endif %} mx-auto">
+
+    {% if show_tabs %}
+    <!-- Tabs -->
+    <div class="flex gap-1 mb-4 bg-gray-100/80 dark:bg-gray-800/80 rounded-2xl p-1.5 backdrop-blur-sm">
+        <button type="button" @click="stopScanner(); tab = 'orden'"
+                :class="tab === 'orden' ? 'bg-white dark:bg-gray-700 shadow-md text-primary-600 dark:text-accent-400 font-semibold' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                class="flex-1 py-2.5 px-3 rounded-xl text-sm transition-all duration-200 flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+            <span class="hidden sm:inline">Orden +</span> Codigo
+        </button>
+        <button type="button" @click="stopScanner(); tab = 'ose'"
+                :class="tab === 'ose' ? 'bg-white dark:bg-gray-700 shadow-md text-primary-600 dark:text-accent-400 font-semibold' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                class="flex-1 py-2.5 px-3 rounded-xl text-sm transition-all duration-200 flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+            OSE ID
+        </button>
+        <button type="button" @click="tab = 'qr'; startScanner()"
+                :class="tab === 'qr' ? 'bg-white dark:bg-gray-700 shadow-md text-primary-600 dark:text-accent-400 font-semibold' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'"
+                class="flex-1 py-2.5 px-3 rounded-xl text-sm transition-all duration-200 flex items-center justify-center gap-1.5">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9V5a2 2 0 012-2h4m6 0h4a2 2 0 012 2v4m0 6v4a2 2 0 01-2 2h-4m-6 0H5a2 2 0 01-2-2v-4"/></svg>
+            <span class="hidden sm:inline">Escanear</span> QR
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Orden + Codigo Form (DEFAULT) -->
+    <form x-show="tab === 'orden'" action="/buscar" method="get" @submit="saveToHistory(queryOrden)">
+        <input type="hidden" name="tipo" value="orden">
+        <div class="flex gap-2">
+            <div class="relative flex-1">
+                <input type="text" name="q" x-model="queryOrden"
+                       placeholder="N. de orden (8 digitos)"
+                       maxlength="8"
+                       inputmode="numeric"
+                       pattern="[0-9]*"
+                       @input="queryOrden = queryOrden.replace(/[^0-9]/g, '')"
+                       autocomplete="off"
+                       class="w-full {% if size == 'large' %}py-4 px-6 text-lg{% else %}py-3 px-4 text-base{% endif %} bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl shadow-sm focus:border-primary-600 dark:focus:border-accent-500 focus:ring-4 focus:ring-primary-600/10 dark:focus:ring-accent-500/10 outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500">
+            </div>
+            <div class="relative w-28 sm:w-36">
+                <input type="text" name="codigo" x-model="queryCodigo"
+                       placeholder="Codigo"
+                       maxlength="4"
+                       @input="queryCodigo = queryCodigo.replace(/[^A-Za-z0-9]/g, '').toUpperCase()"
+                       autocomplete="off"
+                       class="w-full {% if size == 'large' %}py-4 px-4 text-lg{% else %}py-3 px-3 text-base{% endif %} bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl shadow-sm focus:border-primary-600 dark:focus:border-accent-500 focus:ring-4 focus:ring-primary-600/10 dark:focus:ring-accent-500/10 outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500 uppercase font-semibold tracking-wider text-center">
+            </div>
+            <button type="submit"
+                    class="{% if size == 'large' %}p-4{% else %}p-3{% endif %} bg-primary-600 hover:bg-primary-700 dark:bg-accent-500 dark:hover:bg-accent-600 text-white rounded-2xl transition-all duration-200 flex-shrink-0 btn-hover shadow-sm">
+                <svg class="{% if size == 'large' %}w-6 h-6{% else %}w-5 h-5{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </button>
+        </div>
+    </form>
+
+    <!-- OSE Form -->
+    <form x-show="tab === 'ose'" action="/buscar" method="get" @submit="saveToHistory(queryOse)" style="display:none">
+        <input type="hidden" name="tipo" value="ose">
+        <div class="relative">
+            <input type="text" name="q" x-model="queryOse" value="{{ query }}"
+                   placeholder="Ingresa el ID OSE (8 digitos)"
+                   maxlength="8"
+                   inputmode="numeric"
+                   pattern="[0-9]*"
+                   @input="queryOse = queryOse.replace(/[^0-9]/g, '')"
+                   autocomplete="off"
+                   class="w-full {% if size == 'large' %}py-4 px-6 text-lg{% else %}py-3 px-4 text-base{% endif %} bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl shadow-sm focus:border-primary-600 dark:focus:border-accent-500 focus:ring-4 focus:ring-primary-600/10 dark:focus:ring-accent-500/10 outline-none transition-all placeholder:text-gray-400 dark:placeholder:text-gray-500">
+            <button type="submit"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 {% if size == 'large' %}p-3{% else %}p-2{% endif %} bg-primary-600 hover:bg-primary-700 dark:bg-accent-500 dark:hover:bg-accent-600 text-white rounded-xl transition-all duration-200 btn-hover shadow-sm">
+                <svg class="{% if size == 'large' %}w-6 h-6{% else %}w-5 h-5{% endif %}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+            </button>
+        </div>
+    </form>
+
+    <!-- QR Scanner -->
+    <div x-show="tab === 'qr'" x-cloak class="animate-scale-in">
+        <div class="bg-white dark:bg-gray-800 border-2 border-gray-200 dark:border-gray-600 rounded-2xl overflow-hidden shadow-sm">
+            <div id="qr-reader" class="w-full"></div>
+            <div class="p-4 text-center">
+                <p class="text-sm text-gray-500 dark:text-gray-400" x-text="scannerStatus">Iniciando camara...</p>
+                <button type="button" @click="stopScanner(); tab = 'orden'"
+                        class="mt-3 text-xs text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                    Cancelar escaneo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search history -->
+    <div x-show="history.length > 0 && tab !== 'qr'" class="mt-3">
+        <div class="flex flex-wrap gap-1.5">
+            <template x-for="item in history.slice(0, 5)" :key="item">
+                <button type="button" @click="setQuery(item)"
+                        class="text-xs bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 px-2.5 py-1 rounded-lg text-gray-500 dark:text-gray-400 transition-colors border border-gray-200 dark:border-gray-700">
+                    <span x-text="item"></span>
+                </button>
+            </template>
+        </div>
+    </div>
+</div>
+{% endmacro %}

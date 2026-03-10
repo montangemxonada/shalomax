@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#2d5a8e"/>
+    </linearGradient>
+    <linearGradient id="acc" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#bg)"/>
+  <!-- Tracking arrow -->
+  <path d="M8 22 C10 16, 14 13, 18 13 C22 13, 24 10, 25 8" stroke="url(#acc)" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <path d="M22 6 L26 9 L23 13" stroke="url(#acc)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Pin dot -->
+  <circle cx="25" cy="7" r="3" fill="#f97316"/>
+  <circle cx="25" cy="6.5" r="1.2" fill="white"/>
+</svg>

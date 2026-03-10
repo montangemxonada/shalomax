@@ -1,0 +1,73 @@
+{% from "components/timeline.html" import render_timeline %}
+
+{% macro render_card(result, show_timeline=true) %}
+<div class="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden card-hover">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-primary-600 via-primary-700 to-primary-800 dark:from-primary-700 dark:via-primary-800 dark:to-primary-900 px-5 py-4 flex items-center justify-between">
+        <div>
+            <span class="text-white/60 text-xs font-medium uppercase tracking-wider">OSE</span>
+            <h3 class="text-white font-bold text-lg tracking-wide">{{ result.ose_id }}</h3>
+        </div>
+        <a href="/tracking/{{ result.ose_id }}" class="bg-white/15 hover:bg-white/25 text-white text-xs font-semibold px-4 py-2 rounded-xl transition-all duration-200 backdrop-blur-sm border border-white/10">
+            Ver detalle
+        </a>
+    </div>
+
+    <div class="p-5">
+        <!-- Status badge -->
+        <div class="mb-4 flex items-center gap-3">
+            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-semibold
+                {% if 'entregado' in result.status|lower %}bg-success-50 text-success-600 dark:bg-success-500/10 dark:text-success-500 border border-success-500/20
+                {% elif 'transito' in result.status|lower or 'reparto' in result.status|lower %}bg-accent-50 text-accent-600 dark:bg-accent-500/10 dark:text-accent-400 border border-accent-500/20
+                {% else %}bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 border border-blue-500/20{% endif %}">
+                <span class="w-2 h-2 rounded-full
+                    {% if 'entregado' in result.status|lower %}bg-success-500
+                    {% elif 'transito' in result.status|lower or 'reparto' in result.status|lower %}bg-accent-500 animate-pulse
+                    {% else %}bg-blue-500{% endif %}"></span>
+                {{ result.status }}
+            </span>
+            {% if result.estimated_delivery %}
+            <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ result.estimated_delivery }}</span>
+            {% endif %}
+        </div>
+
+        <!-- Info grid -->
+        <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+            <div class="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-3">
+                <p class="text-gray-500 dark:text-gray-400 text-xs font-medium mb-0.5">Remitente</p>
+                <p class="font-semibold truncate text-sm">{{ result.sender_name }}</p>
+                <p class="text-xs text-gray-400">{{ result.sender_dni }}</p>
+            </div>
+            <div class="bg-gray-50 dark:bg-gray-700/40 rounded-xl p-3">
+                <p class="text-gray-500 dark:text-gray-400 text-xs font-medium mb-0.5">Destinatario</p>
+                <p class="font-semibold truncate text-sm">{{ result.receiver_name }}</p>
+                <p class="text-xs text-gray-400">{{ result.receiver_dni }}</p>
+            </div>
+        </div>
+
+        {% if result.order_number or result.order_code %}
+        <div class="flex gap-3 mb-4 text-sm">
+            {% if result.order_number %}
+            <div class="bg-gray-50 dark:bg-gray-700/40 rounded-xl px-3 py-2">
+                <span class="text-gray-500 dark:text-gray-400 text-xs">Orden:</span>
+                <span class="font-semibold ml-1">{{ result.order_number }}</span>
+            </div>
+            {% endif %}
+            {% if result.order_code %}
+            <div class="bg-gray-50 dark:bg-gray-700/40 rounded-xl px-3 py-2">
+                <span class="text-gray-500 dark:text-gray-400 text-xs">Codigo:</span>
+                <span class="font-semibold ml-1">{{ result.order_code }}</span>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Timeline -->
+        {% if show_timeline and result.timeline %}
+        <div class="border-t border-gray-100 dark:border-gray-700 pt-4">
+            {{ render_timeline(result.timeline, animate=false) }}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}

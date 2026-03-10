@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <defs>
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e3a5f"/>
+      <stop offset="100%" stop-color="#2d5a8e"/>
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#fb923c"/>
+    </linearGradient>
+    <linearGradient id="arrowGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#1e3a5f" flood-opacity="0.2"/>
+    </filter>
+  </defs>
+
+  <!-- Main box body -->
+  <rect x="20" y="42" width="80" height="56" rx="12" fill="url(#boxGrad)" filter="url(#shadow)"/>
+
+  <!-- Box flap / lid -->
+  <path d="M20 54 L60 28 L100 54" stroke="url(#boxGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <path d="M20 54 L60 28 L100 54 L60 46 Z" fill="url(#boxGrad)" opacity="0.85"/>
+
+  <!-- Tracking arrow (curved path going up-right) -->
+  <path d="M38 82 C42 68, 52 62, 60 62 C68 62, 78 58, 82 48" stroke="url(#arrowGrad)" stroke-width="4" stroke-linecap="round" fill="none"/>
+  <!-- Arrow tip -->
+  <path d="M78 42 L84 48 L78 54" stroke="url(#arrowGrad)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Location pin -->
+  <circle cx="90" cy="24" r="11" fill="url(#accentGrad)"/>
+  <circle cx="90" cy="22" r="4" fill="white"/>
+  <path d="M90 35 L86 28 L94 28 Z" fill="url(#accentGrad)"/>
+
+  <!-- Small dots for tracking path -->
+  <circle cx="42" cy="78" r="2.5" fill="#fb923c" opacity="0.6"/>
+  <circle cx="52" cy="66" r="2.5" fill="#fb923c" opacity="0.8"/>
+  <circle cx="66" cy="60" r="2.5" fill="#fb923c"/>
+</svg>

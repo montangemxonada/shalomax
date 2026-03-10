@@ -1,0 +1,26 @@
+{
+    "name": "Shalomax - Rastreo de Envios",
+    "short_name": "Shalomax",
+    "description": "Rastrea tus envios de Shalom al instante",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#f8fafc",
+    "theme_color": "#1e3a5f",
+    "orientation": "portrait-primary",
+    "icons": [
+        {
+            "src": "/static/img/favicon.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "any"
+        },
+        {
+            "src": "/static/img/logo.svg",
+            "sizes": "any",
+            "type": "image/svg+xml",
+            "purpose": "maskable"
+        }
+    ],
+    "categories": ["utilities", "logistics"],
+    "lang": "es"
+}
