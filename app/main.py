@@ -1,4 +1,5 @@
 import logging
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, Request
@@ -21,6 +22,8 @@ logging.basicConfig(
 )
 
 settings = get_settings()
+
+logging.info("Starting Shalomax on port %s", os.environ.get("PORT", "8000 (default)"))
 
 limiter = Limiter(key_func=get_remote_address)
 
